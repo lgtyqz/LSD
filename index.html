@@ -307,7 +307,7 @@ function drawBackground(state, time, lastFrame){
             if(time % 125 < lastFrame % 125 && time != 0){
                 var columnHeight = Math.random() * GAME.canvas.height/2;
                 backgroundElements.push(new Shape(GAME.canvas.width + GAME.canvas.width * (GAME.canvas.height/2 - columnHeight)/125 + 25, GAME.canvas.height/2 - columnHeight/2, 50, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 1));
-                backgroundElements.push(new Shape(GGAME.canvas.width + GAME.canvas.width * (GAME.canvas.height/2 - columnHeight)/125 + 25, GAME.canvas.height/2 - columnHeight/2, 53, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.5));
+                backgroundElements.push(new Shape(GAME.canvas.width + GAME.canvas.width * (GAME.canvas.height/2 - columnHeight)/125 + 25, GAME.canvas.height/2 - columnHeight/2, 53, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.5));
                 backgroundElements.push(new Shape(GAME.canvas.width + GAME.canvas.width * (GAME.canvas.height/2 - columnHeight)/125 + 25, GAME.canvas.height/2 - columnHeight/2, 56, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.25));
             }
         break;
