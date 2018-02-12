@@ -397,7 +397,7 @@ function drawBackground(state, time, lastFrame){
                 }
                 if(s.type == "rect"){
                     s.width = 50 - Math.abs(s.position.x - GAME.canvas.width/2) * 0.03;
-                    s.position.x -= (GAME.canvas.height/2 - s.height)/125;
+                    s.position.x -= (GAME.canvas.height/2 - s.height)/GAME.canvas.height/2;
                 }
                 if(s.position.x <= 0){
                     backgroundElements.splice(i, 1);
