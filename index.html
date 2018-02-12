@@ -306,9 +306,9 @@ function drawBackground(state, time, lastFrame){
             }
             if(time % 125 < lastFrame % 125 && time != 0){
                 var columnHeight = Math.random() * GAME.canvas.height/2;
-                backgroundElements.push(new Shape(GAME.canvas.width + GAME.canvas.width * (GAME.canvas.height/2 - columnHeight)/125 + 25, GAME.canvas.height/2 - columnHeight/2, 50, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 1));
-                backgroundElements.push(new Shape(GAME.canvas.width + GAME.canvas.width * (GAME.canvas.height/2 - columnHeight)/125 + 25, GAME.canvas.height/2 - columnHeight/2, 53, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.5));
-                backgroundElements.push(new Shape(GAME.canvas.width + GAME.canvas.width * (GAME.canvas.height/2 - columnHeight)/125 + 25, GAME.canvas.height/2 - columnHeight/2, 56, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.25));
+                backgroundElements.push(new Shape(GAME.canvas.width + 25, GAME.canvas.height/2 - columnHeight/2, 50, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 1));
+                backgroundElements.push(new Shape(GAME.canvas.width + 25, GAME.canvas.height/2 - columnHeight/2, 53, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.5));
+                backgroundElements.push(new Shape(GAME.canvas.width + 25, GAME.canvas.height/2 - columnHeight/2, 56, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.25));
             }
         break;
     }
@@ -397,8 +397,7 @@ function drawBackground(state, time, lastFrame){
                 }
                 if(s.type == "rect"){
                     s.width = 50 - Math.abs(s.position.x - GAME.canvas.width/2) * 0.03;
-                    /*s.position.x += 5;
-                    s.position.x -= (GAME.canvas.width + GAME.canvas.width * (GAME.canvas.height/2 - columnHeight)/125 + 25)/10000;*/
+                    s.position.x -= 5 * (GAME.canvas.height/2 - s.height)/GAME.canvas.width;
                 }
                 if(s.position.x <= 0){
                     backgroundElements.splice(i, 1);
