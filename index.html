@@ -138,6 +138,24 @@ function Shape(X, Y, W, H, type, color, rotation, opacity, p1, p2, p3){
                 CTX.lineTo(this.width, this.height);
                 CTX.stroke();
             break;
+            case "poly":
+                CTX.beginPath();
+                CTX.lineWidth = this.width;
+                CTX.fillStyle = this.color;
+                CTX.strokeStyle = this.color;
+                CTX.moveTo(this.p1[0][0], this.p1[0][1]);
+                for(var i = 1; i < this.p1.length; i++){ //X & Y coords are in p1, nested
+                    CTX.lineTo(this.p1[i][0], this.p1[i][1]);
+                }
+                CTX.closePath();
+                CTX.fill();
+                if(this.p2){//p2 defines fill
+                    CTX.fill();
+                }
+                if(this.p3){//p3 defines stroke
+                    CTX.stroke();
+                }
+            break;
         }
         CTX.globalAlpha = 1;
         CTX.restore();
@@ -178,7 +196,7 @@ function drawElements(time){
 }
 var backgroundElements = [];
 var elementCounter = 0;
-var backgroundState = Math.floor(Math.random() * 6) + 1;
+var backgroundState = Math.floor(Math.random() * 7) + 1;
 var anim5MSFrameGap = 200;
 //It's the nutshack
 var bpm = 120;
@@ -311,6 +329,21 @@ function drawBackground(state, time, lastFrame){
                 backgroundElements.push(new Shape(GAME.canvas.width + 25, GAME.canvas.height/2 - columnHeight/2, 56, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.25));
             }
         break;
+        case 7:
+            if(time % 1000 < lastFrame % 1000 && time != 0){
+                backgroundElements.push(new Shape(GAME.canvas.width/2, GAME.canvas.height/2, 0, 0,
+                "poly", "#FFFF00", 0, 1,
+                [
+                    [-5, 0],
+                    [5, 0],
+                    [5, 0],
+                    [-5, 0]
+                ], true));
+            }
+            if(time % 125 < lastFrame % 125 && time != 0){
+                backgroundElements.push(new Shape(GAME.canvas.width/2, -15, GAME.canvas.width, 30, "rect", "#0061FF", 0, 1));
+            }
+        break;
     }
     for(var i = backgroundElements.length - 1; i >= 0; i--){
         var s = backgroundElements[i];
@@ -401,6 +434,46 @@ function drawBackground(state, time, lastFrame){
                 }
                 if(s.position.x <= 0){
                     backgroundElements.splice(i, 1);
+                }
+            break;
+            case 7:
+                if(s.type == "poly"){
+                    var temp = s.p1[2][1];
+                    s.p1[2][1] = ((temp + 1) * 2)/1.9; //Adjust vertex y-position
+                    s.p1[3][1] = ((temp + 1) * 2)/1.9;
+                    s.p1[3][0] = -5 - (temp)/10; //Grow x-position
+                    s.p1[2][0] = 5 + (temp)/10; //Grow x-position
+                    if(s.p1[2][1] > GAME.canvas.height/8){
+                        //alert("PINGAS");
+                        var temp2 = s.p1[0][1];
+                        s.p1[0][1] = ((temp2 + 1) * 2)/1.9;
+                        s.p1[1][1] = ((temp2 + 1) * 2)/1.9;
+                        s.p1[0][0] = -5 - (temp2)/10;
+                        s.p1[1][0] = 5 + (temp2)/10;
+                    }
+                    if(s.p1[0][1] > GAME.canvas.height){
+                        backgroundElements.splice(i, 1);
+                    }   
+                }
+                if(s.type == "rect"){
+                    s.position.y += 2;
+                    /*if(s.position.y < GAME.canvas.height/4){
+                        s.color = lerpColor("#000042", "#170021", (s.position.y/(GAME.canvas.height/4)));
+                    }else{
+                        s.color = lerpColor("#170021", "#000000", ((s.position.y - GAME.canvas.height/4)/(GAME.canvas.height/4)));
+                    }*/
+                    
+                    if(s.position.y < GAME.canvas.height/6){
+                        s.color = lerpColor("#FFE563", "#FF7F00", (s.position.y/(GAME.canvas.height/6)));
+                    }else if(s.position.y < 2 * GAME.canvas.height/6){
+                        s.color = lerpColor("#FF7F00", "#A02000", ((s.position.y - GAME.canvas.height/6)/(GAME.canvas.height/6)));
+                    }else{
+                        s.color = lerpColor("#A02000", "#000000", ((s.position.y - 2 * GAME.canvas.height/6)/(GAME.canvas.height/8)));
+                    }
+                    
+                    if(s.position.y > GAME.canvas.height/2){
+                        backgroundElements.splice(i, 1);
+                    }
                 }
             break;
         }
