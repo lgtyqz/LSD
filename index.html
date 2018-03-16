@@ -102,7 +102,7 @@ function Shape(X, Y, W, H, type, color, rotation, opacity, p1, p2, p3){
         switch(type){
             case "ellipse":
                 CTX.beginPath();
-                CTX.ellipse(0, 0, this.width, this.height, 0, 0, 2*Math.PI);
+                CTX.ellipse(0, 0, Math.abs(this.width), Math.abs(this.height), 0, 0, 2*Math.PI);
                 CTX.fill();
                 CTX.closePath();
             break;
@@ -196,7 +196,7 @@ function drawElements(time){
 }
 var backgroundElements = [];
 var elementCounter = 0;
-var backgroundState = Math.floor(Math.random() * 7) + 1;
+var backgroundState = Math.floor(Math.random() * 8) + 1;
 var anim5MSFrameGap = 200;
 //It's the nutshack
 var bpm = 120;
@@ -326,7 +326,7 @@ function drawBackground(state, time, lastFrame){
                 var columnHeight = Math.random() * GAME.canvas.height/2;
                 backgroundElements.push(new Shape(GAME.canvas.width + 25, GAME.canvas.height/2 - columnHeight/2, 50, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 1));
                 backgroundElements.push(new Shape(GAME.canvas.width + 25, GAME.canvas.height/2 - columnHeight/2, 53, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.5));
-                backgroundElements.push(new Shape(GAME.canvas.width + 25, GAME.canvas.height/2 - columnHeight/2, 56, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.25));
+                backgroundElements.push(new Shape(GAME.canvas.width + 25, GAME.canvas.height/2 - columnHeight/2, 56, columnHeight, "rect", lerpColor("#88FFFF", "#0000FF", Math.random()), 0, 0.1));
             }
         break;
         case 7:
@@ -343,6 +343,20 @@ function drawBackground(state, time, lastFrame){
             if(time % 125 < lastFrame % 125 && time != 0){
                 backgroundElements.push(new Shape(GAME.canvas.width/2, -15, GAME.canvas.width, 30, "rect", "#0061FF", 0, 1));
             }
+        break;
+        case 8: // pulsing
+            if(time % 500 < lastFrame % 500 && time != 0){
+                backgroundElements.push(
+                    new Shape(
+                        0, GAME.canvas.height/2, 5, 5,
+                        "ellipse", "#FF0000", 0, 0.05, Math.sin(time) * 0.3));
+                backgroundElements.push(
+                    new Shape(
+                        GAME.canvas.width, GAME.canvas.height/2, 5, 5,
+                        "ellipse", "#0000FF", 0, 0.05, Math.cos(time) * 0.3));
+            }
+            GAME.context.fillStyle = lerpColor("#333333", "#000000", (time % 1000)/1000);
+            GAME.context.fillRect(0, 0, GAME.canvas.width, GAME.canvas.height);
         break;
     }
     for(var i = backgroundElements.length - 1; i >= 0; i--){
@@ -472,6 +486,43 @@ function drawBackground(state, time, lastFrame){
                     }
                     
                     if(s.position.y > GAME.canvas.height/2){
+                        backgroundElements.splice(i, 1);
+                    }
+                }
+            break;
+            case 8:
+                if(s.type == "ellipse"){
+                    if(s.position.x < GAME.canvas.width/2){
+                        s.position.x += 1;
+                    }else{
+                        s.position.x -= 1;
+                    }
+                    var interval = 1000;
+                    //var interval = 125;
+                    /*
+                    //Somewhat smooth saw wave
+                    var eccon = Math.sin(time/interval) +
+                                1/2 * Math.sin(2 * time/interval) +
+                                1/3 * Math.sin(3 * time/interval) +
+                                1/4 * Math.sin(4 * time/interval) + 
+                                1/5 * Math.sin(5 * time/interval) +
+                                1/6 * Math.sin(6 * time/interval);
+                    var eccon = 0;
+                    for(var k = 0; k < 15; k++){
+                        eccon += 1/(k + 1) * Math.sin((k + 1) * time/interval);
+                    }
+                    s.width += (0.5 + 2 * Math.sign(eccon) * Math.pow(eccon, 2));
+                    s.height += (0.5 + 2.5 * Math.sign(eccon) * Math.pow(eccon, 2));
+                    */
+                    s.width += 0.75;
+                    s.position.y += s.p1;
+                    s.opacity = 0.05;
+                    if(time % interval < lastFrame % interval){
+                        s.height += 100;
+                        s.opacity = 0.2;
+                    }
+                    s.height -= 2;
+                    if(Math.abs(GAME.canvas.width/2 - s.position.x) < 2){
                         backgroundElements.splice(i, 1);
                     }
                 }
