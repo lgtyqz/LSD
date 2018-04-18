@@ -2,6 +2,7 @@
 <html>
     <!-- Will be a super, super casual & trippy rhythm game.-->
 <head>
+    <link href="https://fonts.googleapis.com/css?family=Song+Myung|Special+Elite|Stylish" rel="stylesheet">
 <title>ＴＲＩＰ.ＯＵＴ</title>
 <style>
 canvas {
@@ -156,11 +157,34 @@ function Shape(X, Y, W, H, type, color, rotation, opacity, p1, p2, p3){
                     CTX.stroke();
                 }
             break;
+            case "text":
+                CTX.font = this.p1;
+                CTX.fillStyle = this.color;
+                CTX.strokeStyle = this.color;
+                CTX.textAlign = "center";
+                if(this.p2){ CTX.fillText(this.text, 0, 0); }
+                if(this.p3){ CTX.strokeText(this.text, 0, 0); }
+            break;
         }
         CTX.globalAlpha = 1;
         CTX.restore();
     }
 }
+var possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+var extendedChars = "αβγδϵζηθικλμνξοπρστυϕχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
+var possibleWords = [
+    "kill", "murder", "destroy", "burn", "BURN", "hell", "HELL", "help", "die",
+    "!", "wring", "neck", "person", "murderer", "darkness", "despair", "grief",
+    "stigma", "blindness", "blind", "rape", "graft", "blood", "bloody", "cry",
+    "NO ONE WILL SAVE YOU", "you", "me", "joy", "pleasure", "taxes", "HAHAHAHA",
+    "gore", "viscera", "liver", "heart", "brain", "eyes", "see", "stab", "twist",
+    "break", "soul", "spirit", "hang", "BEHIND YOU", "there", "in", "on", "around",
+    "for", "boil", "9th circle", "acid", "vitriol", "melt", "shank", "love",
+    "lust", "scream", "yell", "NO ONE CAN HEAR YOU SCREAM", "cold", "hard", "lover",
+    "forever", "for eternity", "eternity", "depression", "tears", "nightmares",
+    "NIGHTMARES", "frightening", "HAHAHAHAHA", "wrench", "crunch", "crush",
+    "of", "her", "him", "her", "your", "you", "YOU DID THIS", "WHY", "WHY", "WHY",
+];
 function colorToList(color){
     return [
         parseInt(color.slice(1, 3), 16),
@@ -358,6 +382,33 @@ function drawBackground(state, time, lastFrame){
             GAME.context.fillStyle = lerpColor("#333333", "#000000", (time % 1000)/1000);
             GAME.context.fillRect(0, 0, GAME.canvas.width, GAME.canvas.height);
         break;
+        case 9:
+            if(time % 3 == 0){
+                GAME.context.fillStyle = "#55FC55";
+            }else if(time % 3 == 1){
+                GAME.context.fillStyle = "#FFA420";    
+            }else{
+                GAME.context.fillStyle = "#FF42D6";
+            }
+            GAME.context.fillRect(0, 0,
+                                    GAME.canvas.width,
+                                    GAME.canvas.height);
+            for(var i = 0; i < 2; i++){
+                //var angle = (time) * Math.PI * 2;
+                var angle = time * (i + 1);
+                var char = Math.floor(Math.random() * possibleChars.length);
+                var text = new Shape(GAME.canvas.width/2, GAME.canvas.height/2,
+                7 * Math.cos(angle), 7 * Math.sin(angle), "text", "#000000", angle / Math.PI * 180, 1, "45px Special Elite", true, false);
+                text.text = possibleChars.slice(char, char + 1);
+                /*var text2 = new Shape(GAME.canvas.width/2, GAME.canvas.height/2,
+                4 * Math.cos(angle), 4 * Math.sin(angle), "text", "#999999", angle / Math.PI * 180, 0.25, "65px Special Elite", true, false);
+                text2.text = possibleChars.slice(char, char + 1);*/
+                //alert(text.text);
+                backgroundElements.push(text);
+                //backgroundElements.push(text2);
+            }
+            backgroundElements.push(new Shape(GAME.canvas.width/2, 3 * Math.random(), GAME.canvas.width, 8, "rect", "#000000", 0, 1));
+        break;
     }
     for(var i = backgroundElements.length - 1; i >= 0; i--){
         var s = backgroundElements[i];
@@ -525,6 +576,22 @@ function drawBackground(state, time, lastFrame){
                     if(Math.abs(GAME.canvas.width/2 - s.position.x) < 2){
                         backgroundElements.splice(i, 1);
                     }
+                }
+            break;
+            case 9:
+                if(s.type == "text"){
+                    s.position.x += s.width;
+                    s.position.y += s.height;
+                }
+                if(s.type == "rect"){
+                    s.position.y += 11;
+                }
+                if(s.position.x > GAME.canvas.width ||
+                s.position.y > GAME.canvas.height ||
+                s.position.x + s.width * 0.7 < 0 ||
+                s.position.y + s.height * 0.7 < 0 ||
+                s.opacity <= 0){
+                    backgroundElements.splice(i, 1);
                 }
             break;
         }
