@@ -39,6 +39,12 @@ var GAME = {
     level: 1,
     date: new Date(),
 }
+var sounds = {
+    BASS: new Audio("kick.ogg"),
+    SNARE: new Audio("snare.ogg"),
+    HIHAT: new Audio("hh.ogg"),
+    OHIHAT: new Audio("hho.ogg")
+}
 GAME.initTime = GAME.date.getTime();
 GAME.lastFrame = GAME.initTime;
 function Entity(X, Y, width, height, type, STATIC, friction, gravity, color, text){
@@ -220,7 +226,7 @@ function drawElements(time){
 }
 var backgroundElements = [];
 var elementCounter = 0;
-var backgroundState = Math.floor(Math.random() * 9) + 1;
+var backgroundState = Math.floor(Math.random() * 9 + 1);
 var anim5MSFrameGap = 200;
 //It's the nutshack
 var bpm = 120;
@@ -610,21 +616,26 @@ function drawBackground(state, time, lastFrame){
 }
 document.onkeydown = function(e){
     e = e || window.event;
-    //var differenceFromBeat = Math.abs(Math.abs((GAME.date.getTime() - GAME.initTime) % 1000 - 500) - 500);
-    //document.getElementById("frameOutput").innerHTML += ("<br>" + differenceFromBeat);
-    var beatFrame = (GAME.date.getTime() - GAME.initTime) % frameGap;
-    var onBeat = false;
-    for(var i = 0; i < framesOfInterest.length; i++){
-        console.log("B: " + framesOfInterest[i]);
-        console.log("b: " + beatFrame);
-        if(Math.abs(framesOfInterest[i] - beatFrame) <= 15 || Math.abs(framesOfInterest[i] - beatFrame) >= 975){
-            onBeat = true;
-        }
-    }
-    if(onBeat){
-        //document.getElementById("frameOutput").innerHTML += "...<br>";
-    }else{
-        document.getElementById("frameOutput").innerHTML += "QWhfgfbhoqiwehflueiwhfli<br>";
+    //Sound playing
+    switch(e.keyCode){
+        case 65: //a
+        case 83: //s
+        case 68: //d
+            sounds.BASS.currentTime = 0;
+            sounds.BASS.play();
+        break;
+        case 70: //f
+            sounds.SNARE.currentTime = 0;
+            sounds.SNARE.play();
+        break;
+        case 74: //j
+            sounds.HIHAT.currentTime = 0;
+            sounds.HIHAT.play();
+        break;
+        case 75: //k
+            sounds.OHIHAT.currentTime = 0;
+            sounds.OHIHAT.play();
+        break;
     }
 }
 document.onkeyup = function(e){
