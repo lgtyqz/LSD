@@ -136,7 +136,7 @@ function Track(videoID, BPM, threshold=60){
     this.videoID = videoID;
     this.BPM = BPM;
     this.threshold = threshold;
-    this.prototype.load = function(){
+    this.LOAD = function(){
         player.loadVideoById(this.videoID);
         setBPM(this.BPM);
         threshold = this.threshold;
@@ -750,7 +750,7 @@ document.onkeydown = function(e){
                 score = 0;
                 backgroundElements = []
                 foregroundElements = []
-                tracklist[GAME.state].load();
+                tracklist[GAME.state].LOAD();
             }
         break;
         default:
